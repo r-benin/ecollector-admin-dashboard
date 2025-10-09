@@ -7,7 +7,6 @@ import { createContext, useState, useEffect } from "react";
 import { onAuthStateChanged, UserCredential } from "firebase/auth";
 import { auth } from "./firebase/config";
 import { usePathname, useRouter } from "next/navigation";
-import { addUsers } from "./firebase/dummy_users";
 import Head from "next/head";
 
 // AuthContext Type

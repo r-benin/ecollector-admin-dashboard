@@ -16,7 +16,6 @@ import { collectionType } from '@/components/table-columns'
 
 
 import { Button, } from '@/components/ui/button'
-import { pendingEntries, ongoingEntries } from '@/public/dummy-data'
 import RequestsNotifBadge from '@/components/requests-notif-badge'
 
 import { DashboardContext } from '../layout'

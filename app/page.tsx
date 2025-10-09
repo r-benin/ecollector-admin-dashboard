@@ -38,7 +38,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AlertCircleIcon } from "lucide-react";
 import { useState, useContext, useEffect } from "react";
-import { addUsers } from './firebase/dummy_users';
 
 const formSchema = z.object({
   email: z.email(),
