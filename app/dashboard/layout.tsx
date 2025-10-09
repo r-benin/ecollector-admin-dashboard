@@ -12,7 +12,6 @@ import { usePathname } from "next/navigation";
 import { collection, onSnapshot, updateDoc, doc} from 'firebase/firestore'
 import { db } from '@/app/firebase/config'
 import { collectionType, voucherType } from '@/components/table-columns'
-import { addUsers } from "../firebase/dummy_users";
 import { accountType, transactionType } from "@/components/table-columns";
 
 type Coordinates = {latitude: number, longitude: number}
