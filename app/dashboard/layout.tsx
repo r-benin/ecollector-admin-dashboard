@@ -114,7 +114,7 @@ export default function Layout({ children } : { children: React.ReactNode }) {
 
                 const entry: collectionType = {
                 name: docData['fullName'],
-                collection_date: formatTimestamp(docData['collectionDate'].toDate(), 'withDay'),
+                collection_date: docData['collectionDate'],
                 status: isOutdated ? 'cancelled' : docData['status'],
                 mobile_number: docData['mobileNumber'],
                 placed_on: docData['placedOn'] ? formatTimestamp(docData['placedOn'].toDate(), 'noDay') : '?',
@@ -135,9 +135,12 @@ export default function Layout({ children } : { children: React.ReactNode }) {
         })
         setPendingCoordinates(pendingCoordinateArray)
         setOngoingCoordinates(ongoingCoordinateArray)
-        setPendingData(requestDocs.filter((doc) => {return doc.status === 'pending'}))
-        setOngoingData(requestDocs.filter((doc) => {return doc.status === 'ongoing'}))
-        setCompletedData(requestDocs.filter((doc) => {return doc.status === 'completed' || doc.status === 'rejected' || doc.status === 'cancelled'}))
+        setPendingData(requestDocs.filter((doc) => {return doc.status === 'pending'})
+            .sort((a, b) => {return a.collection_date - b.collection_date}))
+        setOngoingData(requestDocs.filter((doc) => {return doc.status === 'ongoing'})
+            .sort((a, b) => {return a.collection_date - b.collection_date}))
+        setCompletedData(requestDocs.filter((doc) => {return doc.status === 'completed' || doc.status === 'rejected' || doc.status === 'cancelled'})
+            .sort((a, b) => {return b.collection_date - a.collection_date}))
         clearDocs()
         setIsLoading(false)
         })
@@ -172,13 +175,13 @@ export default function Layout({ children } : { children: React.ReactNode }) {
                     transactionType: docData.transactionType,
                     transactionTitle: docData.transactionTitle,
                     transactionValue: docData.transactionValue,
-                    transactionDate: formatTimestamp(docData.transactionDate.toDate(), 'noDay'),
+                    transactionDate: docData.transactionDate,
                     name: docData.name,
                     userId: docData.userId
                 }
                 transactionsDocs.push(transactionDetails)
             })
-            setTransactionsData(transactionsDocs)
+            setTransactionsData(transactionsDocs.sort((a, b) => {return b.transactionDate - a.transactionDate}))
             clearDocs()
             setIsLoading(false)
         })
@@ -192,14 +195,14 @@ export default function Layout({ children } : { children: React.ReactNode }) {
                     voucherTitle: docData.voucherTitle,
                     voucherPrice: docData.voucherPrice,
                     voucherStatus: docData.voucherStatus,
-                    voucherExpiry: formatTimestamp(docData['voucherExpiry'].toDate(), 'noDay'),
-                    voucherCreatedOn: formatTimestamp(docData['voucherCreatedOn'].toDate(), 'noDay'),
+                    voucherExpiry: docData['voucherExpiry'],
+                    voucherCreatedOn: docData['voucherCreatedOn'],
                     userId: docData.userId,
                 }
                 vouchersDocs.push(voucherDetails)
                 console.log(voucherDetails)
             })
-            setVouchersData(vouchersDocs)
+            setVouchersData(vouchersDocs.sort((a, b) => {return b.voucherCreatedOn - a.voucherCreatedOn}))
             clearDocs()
             setIsLoading(false)
         })

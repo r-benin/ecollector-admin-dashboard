@@ -4,9 +4,24 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 import { TableCell } from './ui/table'
 
+// Converts to formatted date
+function formatTimestamp(timestamp: any, format: 'noDay' | 'withDay') {
+  const fullDate = timestamp.toDate().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'Asia/Singapore'
+  }).replace(',' , '')
+  const weekday = timestamp.toDate().toLocaleDateString('en-US', {
+      weekday: 'short',
+      timeZone: 'Asia/Singapore'
+  })
+  return format === 'noDay' ? `${fullDate}` : `${fullDate} (${weekday})`
+}
+
 export type collectionType = {
   name: string,
-  collection_date: string,
+  collection_date: any,
   status: 'pending' | 'ongoing' | 'completed' | 'rejected' | 'cancelled'
   mobile_number: string,
   placed_on: string,
@@ -37,7 +52,7 @@ export type transactionType = {
   transactionType: 'Deposit' | 'Redeem',
   transactionTitle: string,
   transactionValue: number,
-  transactionDate: string
+  transactionDate: any
   name: string,
   userId: string
 }
@@ -48,7 +63,7 @@ export type voucherType = {
   voucherPrice: number,
   voucherStatus: 'Active' | 'Redeemed' | 'Expired',
   voucherExpiry: string,
-  voucherCreatedOn: string,
+  voucherCreatedOn: any,
   userId: string,
 }
 
@@ -136,7 +151,10 @@ export const requestsColumns: ColumnDef<collectionType>[] = [
   },
   {
     accessorKey: 'collection_date',
-    header: 'Collection Date'
+    header: 'Collection Date',
+    cell: ({row}) => {
+      return <p>{formatTimestamp(row.getValue('collection_date'), 'withDay')}</p>
+    }
   },
   {
     accessorKey: 'status',
@@ -200,7 +218,10 @@ export const ongoingColumns: ColumnDef<collectionType>[] = [
   },
   {
     accessorKey: 'collection_date',
-    header: 'Collection Date'
+    header: 'Collection Date',
+    cell: ({row}) => {
+      return <p>{formatTimestamp(row.getValue('collection_date'), 'withDay')}</p>
+    }
   },
   {
     accessorKey: 'status',
@@ -264,7 +285,10 @@ export const completedColumns: ColumnDef<collectionType>[] = [
   },
   {
     accessorKey: 'collection_date',
-    header: 'Collection Date'
+    header: 'Collection Date',
+    cell: ({row}) => {
+      return <p>{formatTimestamp(row.getValue('collection_date'), 'withDay')}</p>
+    }
   },
     {
     accessorKey: 'placed_on',
@@ -349,6 +373,9 @@ export const transactionsColumns: ColumnDef<transactionType>[] = [
   {
     accessorKey: 'transactionDate',
     header: 'Date',
+    cell: ({row}) => {
+      return <p>{formatTimestamp(row.getValue('transactionDate'), 'noDay')}</p>
+    }
   },
   {
     accessorKey: 'transactionId',
@@ -406,10 +433,16 @@ export const vouchersColumns: ColumnDef<voucherType>[] = [
   {
     accessorKey: 'voucherExpiry',
     header: 'Expiry Date',
+    cell: ({row}) => {
+      return <p>{formatTimestamp(row.getValue('voucherExpiry'), 'noDay')}</p>
+    }
   },
   {
     accessorKey: 'voucherCreatedOn',
     header: 'Created on',
+    cell: ({row}) => {
+      return <p>{formatTimestamp(row.getValue('voucherCreatedOn'), 'noDay')}</p>
+    }
   },
 
 ]

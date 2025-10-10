@@ -181,13 +181,15 @@ export default function Users() {
           transactionValue: amount,
           transactionType: type == 'Redeem' ? 'Redeem' : 'Deposit',
           transactionTitle: type == 'Redeem' ? redeemTransactionTitles[Math.floor(Math.random() * 9)] : depositTransactionTitles[Math.floor(Math.random() * 2)],
-          transactionDate: randomDate(new Date(2025, 0, 1), new Date()),
+          transactionDate: new Date(),
+          // transactionDate below is a date between a range
+          // transactionDate: randomDate(new Date(2025, 0, 1), new Date()),
           name: `${userData.firstName} ${userData.lastName}`,
           userId: id ? id : randomUser
         });
       }
       setRequestIdInput('')
-      console.log('Added transaction!')
+      console.log(`Added transaction for ${userData?.firstName} ${userData?.lastName}!`)
     } catch (e) {
       console.error("Error!", e);
     }
