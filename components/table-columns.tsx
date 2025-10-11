@@ -20,7 +20,7 @@ function formatTimestamp(timestamp: Timestamp, format: 'noDay' | 'withDay') {
 
 export type collectionType = {
   name: string,
-  collection_date: string,
+  collection_date: Timestamp,
   status: 'pending' | 'ongoing' | 'completed' | 'rejected' | 'cancelled'
   mobile_number: string,
   placed_on: string,
@@ -51,7 +51,7 @@ export type transactionType = {
   transactionType: 'Deposit' | 'Redeem',
   transactionTitle: string,
   transactionValue: number,
-  transactionDate: string
+  transactionDate: Timestamp
   name: string,
   userId: string
 }
@@ -62,7 +62,7 @@ export type voucherType = {
   voucherPrice: number,
   voucherStatus: 'Active' | 'Redeemed' | 'Expired',
   voucherExpiry: string,
-  voucherCreatedOn: string,
+  voucherCreatedOn: Timestamp,
   userId: string,
 }
 
