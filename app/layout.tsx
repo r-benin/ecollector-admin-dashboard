@@ -1,13 +1,12 @@
 'use client'
 
-import type { Metadata } from "next";
+import { onAuthStateChanged } from "firebase/auth";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { createContext, useState, useEffect } from "react";
-import { onAuthStateChanged, UserCredential } from "firebase/auth";
-import { auth } from "./firebase/config";
-import { usePathname, useRouter } from "next/navigation";
 import Head from "next/head";
+import { usePathname, useRouter } from "next/navigation";
+import { createContext, useEffect, useState } from "react";
+import { auth } from "./firebase/config";
+import "./globals.css";
 
 // AuthContext Type
 type AuthContextType = {

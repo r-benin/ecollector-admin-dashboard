@@ -1,36 +1,21 @@
-import React, { useState, useContext } from 'react'
-import { Toggle } from "@/components/ui/toggle"
-
+import { useContext } from 'react'
 import { DashboardContext } from '@/app/dashboard/layout'
 
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog"
 
-import {
-  Select,
-  SelectGroup,
-  SelectLabel,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-
-import { Button } from '@/components/ui/button'
-import { doc, updateDoc, addDoc, GeoPoint, Timestamp, collection, deleteDoc } from 'firebase/firestore'
 import { db } from '@/app/firebase/config'
-import { Map, Trash } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { deleteDoc, doc } from 'firebase/firestore'
+import { Trash } from 'lucide-react'
 
 interface CollectionControlsType {
     buttonActive: boolean,

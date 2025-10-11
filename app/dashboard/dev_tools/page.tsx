@@ -1,22 +1,20 @@
 'use client'
 
-import React, { useEffect, useState, useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import { DashboardContext } from '../layout'
 
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card"
-import { collectionType } from '@/components/table-columns'
 
-import { collection, addDoc, GeoPoint, Timestamp, getDoc, doc, Firestore, FieldValue, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/app/firebase/config'
+import { addDoc, collection, doc, GeoPoint, getDoc, serverTimestamp } from 'firebase/firestore'
 
 import { Button, } from '@/components/ui/button'
 

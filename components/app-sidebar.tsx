@@ -2,8 +2,8 @@
 
 import {
     Sidebar,
-    SidebarContent, 
-    SidebarFooter, 
+    SidebarContent,
+    SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
     SidebarHeader,
@@ -12,16 +12,12 @@ import {
     SidebarMenuItem
 } from "@/components/ui/sidebar"
 
-import { LayoutDashboard, Droplet, History, Users, Wrench, Ticket } from "lucide-react"
+import { Droplet, History, LayoutDashboard, Ticket, Users, Wrench } from "lucide-react"
 
 import Image from "next/image"
-
 import { auth } from "@/app/firebase/config"
-import { signOut } from "firebase/auth"
 import { Button } from "@/components/ui/button"
-
-import { useContext } from "react"
-import { DashboardContext } from '@/app/dashboard/layout'
+import { signOut } from "firebase/auth"
 import RequestsNotifBadge from "./requests-notif-badge"
 
 const sidebarItems = [

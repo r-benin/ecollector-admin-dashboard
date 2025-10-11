@@ -1,37 +1,19 @@
 'use client'
 
-import React, { useEffect, useState, useContext } from 'react'
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import DataTable from '@/components/data-table'
-import { collectionType } from '@/components/table-columns'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useContext, useState } from 'react'
 
-import { Button, } from '@/components/ui/button'
 import RequestsNotifBadge from '@/components/requests-notif-badge'
 
-import { DashboardContext } from '../layout'
-import RequestControls from '@/components/requests-controls'
 import OngoingControls from '@/components/ongoing-controls'
+import RequestControls from '@/components/requests-controls'
+import { DashboardContext } from '../layout'
 
-import {Marker} from '@vis.gl/react-google-maps';
-import { completedColumns, ongoingColumns, requestsColumns } from '@/components/table-columns'
 import CompletedControls from '@/components/completed-controls'
-import RequestsCollectionMap from '@/components/requests-collection-map'
 import OngoingCollectionMap from '@/components/ongoing-collection-map'
-
-
-
-
-
-
+import RequestsCollectionMap from '@/components/requests-collection-map'
+import { completedColumns, ongoingColumns, requestsColumns } from '@/components/table-columns'
 
 export default function Collections() {
 

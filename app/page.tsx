@@ -1,43 +1,32 @@
 "use client"
 
-import { auth } from './firebase/config'
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { UserCredential } from 'firebase/auth';
-
+import { auth } from './firebase/config';
 import { useRouter } from 'next/navigation';
-
 import Image from "next/image";
-
-import { AuthContext } from './layout'
-
-import { useForm } from 'react-hook-form'
-import { z } from "zod"
+import { AuthContext } from './layout';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-
+  FormMessage
+} from "@/components/ui/form";
+import { useForm } from 'react-hook-form';
+import { z } from "zod";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { zodResolver } from "@hookform/resolvers/zod";
+  CardTitle
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircleIcon } from "lucide-react";
-import { useState, useContext, useEffect } from "react";
+import { useContext } from "react";
 
 const formSchema = z.object({
   email: z.email(),

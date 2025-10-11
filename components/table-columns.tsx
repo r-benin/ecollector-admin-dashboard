@@ -1,11 +1,10 @@
-import { ColumnDef } from '@tanstack/react-table'
 import CollectionBadge from '@/components/collection-badge'
 import { Checkbox } from "@/components/ui/checkbox"
-
-import { TableCell } from './ui/table'
+import { ColumnDef } from '@tanstack/react-table'
+import { Timestamp } from 'firebase/firestore'
 
 // Converts to formatted date
-function formatTimestamp(timestamp: any, format: 'noDay' | 'withDay') {
+function formatTimestamp(timestamp: Timestamp, format: 'noDay' | 'withDay') {
   const fullDate = timestamp.toDate().toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -21,7 +20,7 @@ function formatTimestamp(timestamp: any, format: 'noDay' | 'withDay') {
 
 export type collectionType = {
   name: string,
-  collection_date: any,
+  collection_date: string,
   status: 'pending' | 'ongoing' | 'completed' | 'rejected' | 'cancelled'
   mobile_number: string,
   placed_on: string,
@@ -52,7 +51,7 @@ export type transactionType = {
   transactionType: 'Deposit' | 'Redeem',
   transactionTitle: string,
   transactionValue: number,
-  transactionDate: any
+  transactionDate: string
   name: string,
   userId: string
 }
@@ -63,7 +62,7 @@ export type voucherType = {
   voucherPrice: number,
   voucherStatus: 'Active' | 'Redeemed' | 'Expired',
   voucherExpiry: string,
-  voucherCreatedOn: any,
+  voucherCreatedOn: string,
   userId: string,
 }
 
