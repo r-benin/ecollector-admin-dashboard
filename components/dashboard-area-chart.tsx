@@ -63,7 +63,7 @@ export function DashboardAreaChart() {
   React.useEffect(() => {
     const generateCollectionData = () => {
         const collectionObject: Record<string, number> = {}
-        const transactionsArray = transactionsData.sort((a, b) => {return a.transactionDate - b.transactionDate})
+        const transactionsArray = transactionsData.sort((a, b) => {return a.transactionDate.toDate().getTime() - b.transactionDate.toDate().getTime()})
         transactionsArray.forEach((transaction) => {
           if (transaction.transactionType == 'Deposit') {
               const transactionDate = formatTimestamp(transaction.transactionDate.toDate(), 'noDay')
