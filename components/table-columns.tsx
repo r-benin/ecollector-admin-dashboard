@@ -3,11 +3,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef } from '@tanstack/react-table'
 import { Timestamp } from 'firebase/firestore'
 import { Badge } from './ui/badge';
-import Image from 'next/image';
-import { useState } from 'react';
-import { getDownloadURL, ref } from 'firebase/storage';
-import { storage } from '@/app/firebase/config';
 import { Bubbles, CircleEllipsis, Home, Utensils } from 'lucide-react';
+import RewardImage from './reward-image';
 
 export type barangayType =
   | "Arkong Bato"
@@ -539,14 +536,7 @@ export const rewardsColumns: ColumnDef<rewardType>[] = [
   {
     accessorKey: 'rewardIcon',
     header: 'Icon',
-    cell: ({row}) => {
-      let iconURL: string = ''
-      getDownloadURL(ref(storage, `/ecollector_assets/rewards/${row.getValue('rewardIcon')}`))
-      .then((url) => { iconURL = url })
-      if (iconURL != null) {
-        return ( <Image src={iconURL} alt={row.getValue('rewardIcon')} width={50} height={50} className='mx-3' /> )
-      }
-    }
+    cell: ({row}) => <RewardImage icon={row.getValue('rewardIcon')} alt={row.getValue('rewardName')}/>
   },
   {
     accessorKey: 'rewardName',
