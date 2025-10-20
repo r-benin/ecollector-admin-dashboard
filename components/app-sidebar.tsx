@@ -19,7 +19,6 @@ import { auth } from "@/app/firebase/config"
 import { Button } from "@/components/ui/button"
 import { signOut } from "firebase/auth"
 import RequestsNotifBadge from "./requests-notif-badge"
-import { migrateBarangayList, migrateCollectionPoints, migrateRewards } from "@/app/firebase/data_migrate"
 
 const sidebarItems = [
     {
