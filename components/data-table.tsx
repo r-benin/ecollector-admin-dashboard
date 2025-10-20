@@ -43,8 +43,9 @@ export default function DataTable<TData, TValue> ({ columns, data, activateButto
         const rows = table.getFilteredSelectedRowModel().flatRows
         const rowIds = rows.map((row) => {
             return currentPage === '/dashboard/collections' ? row.getValue('collection_id') :
-            currentPage === '/dashboard/users' ?row.getValue('userId') :
-            currentPage === '/dashboard/transactions' ?row.getValue('transactionId') : null
+            currentPage === '/dashboard/users' ? row.getValue('userId') :
+            currentPage === '/dashboard/transactions' ? row.getValue('transactionId') :
+            currentPage === '/dashboard/vouchers' ? row.getValue('voucherId') : null
         })
         if (rows.length != 0 && activateButtons) {
             activateButtons(true)
@@ -74,7 +75,8 @@ export default function DataTable<TData, TValue> ({ columns, data, activateButto
         },
         initialState :{
             columnVisibility: {
-                location: false
+                location: false,
+                rewardId: false
             }
         }
     })

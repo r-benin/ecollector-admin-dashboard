@@ -83,8 +83,6 @@ export function DashboardAreaChart() {
 
         setCollectionData(collectionDataArray)
 
-        console.log('WEW')
-        console.log(collectionObject)
         collectionDataArray.map((item) => console.log(item))
     }
 

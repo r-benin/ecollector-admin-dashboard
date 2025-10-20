@@ -26,7 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircleIcon } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 const formSchema = z.object({
   email: z.email(),
@@ -37,6 +37,7 @@ export default function Login() {
 
   // Authentication state context
   const { userId, setUserId } = useContext(AuthContext)
+  const [isLoading, setIsLoading] = useState(false)
 
   //Router
   const router = useRouter()
@@ -53,9 +54,7 @@ export default function Login() {
 
   // Function for log in button (handleOnSubmit)
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log('Username: ', data.email)
-    console.log('Password: ', data.password)
-
+    setIsLoading(true)
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredentials) => {
@@ -70,9 +69,12 @@ export default function Login() {
           form.setError('root', {message: `${error.code}`})
         }
       })
+      setIsLoading(false)
     } catch {
       form.setError('root', {message: "Trouble logging right now, try again later!"})
+      setIsLoading(false)
     }
+    
   }
 
 
@@ -116,7 +118,7 @@ export default function Login() {
                 />
                 
               </div>
-              <Button type='submit' className="mt-4 mb-4  w-full">Log in</Button>
+              <Button type='submit' className="mt-4 mb-4  w-full" disabled={isLoading || userId != null }>Log in</Button>
               { form.formState.errors.root && 
                 <Alert variant='destructive' className="border-red-400 bg-red-100">
                   <AlertCircleIcon />

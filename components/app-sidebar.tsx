@@ -12,13 +12,14 @@ import {
     SidebarMenuItem
 } from "@/components/ui/sidebar"
 
-import { Droplet, History, LayoutDashboard, Ticket, Users, Wrench } from "lucide-react"
+import { Droplet, History, LayoutDashboard, Ticket, Users, Wrench, Calendar, Gift } from "lucide-react"
 
 import Image from "next/image"
 import { auth } from "@/app/firebase/config"
 import { Button } from "@/components/ui/button"
 import { signOut } from "firebase/auth"
 import RequestsNotifBadge from "./requests-notif-badge"
+import { migrateBarangayList, migrateCollectionPoints, migrateRewards } from "@/app/firebase/data_migrate"
 
 const sidebarItems = [
     {
@@ -31,6 +32,16 @@ const sidebarItems = [
         url: '/dashboard/collections',
         icon: Droplet,
         requests: true,
+    },
+    {
+        title: 'Collection Schedule',
+        url: '/dashboard/schedule',
+        icon: Calendar,
+    },
+        {
+        title: 'Rewards',
+        url: '/dashboard/rewards',
+        icon: Gift
     },
     {
         title: 'Transactions',
@@ -88,7 +99,7 @@ export function AppSidebar({requests, ...props} : { requests: number } & React.C
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter className="pb-5 flex items-center">
-                <Button className='w-[90%]' onClick={() => { signOut(auth).then(() => {console.log('Signed out!')})}}>Log out</Button>
+                <Button className='w-[90%]' onClick={() => { signOut(auth).then(() => {console.log('Signed out!')})}}>Log out</Button>            
             </SidebarFooter>
         </Sidebar>
     )

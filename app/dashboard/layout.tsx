@@ -9,9 +9,9 @@ import { AppSidebar } from "@/components/app-sidebar";
 import DashboardHeader from "@/components/dashboard-header";
 import { usePathname } from "next/navigation";
 
-import { collection, onSnapshot, updateDoc, doc} from 'firebase/firestore'
+import { collection, onSnapshot, updateDoc, doc, Timestamp} from 'firebase/firestore'
 import { db } from '@/app/firebase/config'
-import { collectionType, voucherType } from '@/components/table-columns'
+import { barangayType, collectionType, rewardType, scheduleType, voucherType } from '@/components/table-columns'
 import { accountType, transactionType } from "@/components/table-columns";
 
 type Coordinates = {latitude: number, longitude: number}
@@ -24,13 +24,15 @@ type DashboardContextType = {
     completedData: collectionType[] | []
     transactionsData: transactionType[] | []
     vouchersData: voucherType[] | []
-    pendingCoordinates: Coordinates[] | [],
-    ongoingCoordinates: Coordinates[] | [],
-    panMapLocation: (location: Coordinates) => void,
-    mapLocation: Coordinates,
-    centered: boolean,
-    setCentered: (boolean: boolean) => void,
-    resetCheckedRows: boolean,
+    scheduleData: scheduleType[] | []
+    rewardsData: rewardType[] | []
+    pendingCoordinates: Coordinates[] | []
+    ongoingCoordinates: Coordinates[] | []
+    panMapLocation: (location: Coordinates) => void
+    mapLocation: Coordinates
+    centered: boolean
+    setCentered: (boolean: boolean) => void
+    resetCheckedRows: boolean
     setResetCheckedRows: (boolean: boolean) => void
 }
 export const DashboardContext = createContext<DashboardContextType>({
@@ -41,6 +43,8 @@ export const DashboardContext = createContext<DashboardContextType>({
     completedData: [],
     transactionsData: [],
     vouchersData: [],
+    scheduleData: [],
+    rewardsData: [],
     pendingCoordinates: [],
     ongoingCoordinates: [],
     mapLocation: {latitude: 14.67905870159817, longitude: 120.98307441444432},
@@ -64,6 +68,8 @@ export default function Layout({ children } : { children: React.ReactNode }) {
     const [transactionsData, setTransactionsData] = useState<transactionType[]>([])
     const [pendingData, setPendingData] = useState<collectionType[] | []>([])
     const [vouchersData, setVouchersData] = useState<voucherType[] | []>([])
+    const [scheduleData, setScheduleData] = useState<scheduleType[] | []>([])
+    const [rewardsData, setRewardsData] = useState<rewardType[] | []>([])
 
     const [pendingCoordinates, setPendingCoordinates] = useState<Coordinates[]>([])
     const [ongoingCoordinates, setOngoingCoordinates] = useState<Coordinates[]>([])
@@ -78,12 +84,16 @@ export default function Layout({ children } : { children: React.ReactNode }) {
     let usersDocs: accountType[] = []
     let transactionsDocs: transactionType[] = []
     let vouchersDocs: voucherType[] = []
+    let scheduleDocs: scheduleType[] = []
+    let rewardsDocs: rewardType[] = []
     let pendingCoordinateArray: Coordinates[] = []
     let ongoingCoordinateArray: Coordinates[] = []
     const requestsCollection = collection(db, 'ecollector_requests')
     const usersCollection = collection(db, 'ecollector_users')
     const transactionsCollection = collection(db, 'ecollector_transactions')
     const vouchersCollection = collection(db, 'ecollector_vouchers')
+    const scheduleCollection = collection(db, 'ecollector_schedule')
+    const rewardsCollection = collection(db, 'ecollector_rewards')
 
     function clearDocs() {
         requestDocs = []
@@ -92,6 +102,8 @@ export default function Layout({ children } : { children: React.ReactNode }) {
         ongoingCoordinateArray = []
         transactionsDocs = []
         vouchersDocs = []
+        scheduleDocs = []
+        rewardsDocs = []
     }
 
     // Snapshot to fetch all requests
@@ -101,7 +113,7 @@ export default function Layout({ children } : { children: React.ReactNode }) {
             item.forEach((doc) => {
                 const docData = doc.data()
                 let isOutdated = false
-                const requestDate = docData['collectionDate'].toDate()
+                const requestDate = docData['collectionDate']?.toDate()
                 const today = new Date()
 
                 // Checks and cancel outdated requests
@@ -200,9 +212,53 @@ export default function Layout({ children } : { children: React.ReactNode }) {
                     userId: docData.userId,
                 }
                 vouchersDocs.push(voucherDetails)
-                console.log(voucherDetails)
             })
             setVouchersData(vouchersDocs.sort((a, b) => {return b.voucherCreatedOn.toDate().getTime() - a.voucherCreatedOn.toDate().getTime()}))
+            clearDocs()
+            setIsLoading(false)
+        })
+
+        const unsubscribeSchedule = onSnapshot(scheduleCollection, (schedule) => {
+            setIsLoading(true)
+            const collectionDates: {[key: string]: string[]} = {}
+            schedule.forEach((barangay) => {
+                const barangaySchedule = barangay.data().collection_dates
+                if (barangaySchedule) barangaySchedule.forEach((date: Timestamp) => {
+                    const collectionDate: string = formatTimestamp(date.toDate(), 'noDay')
+                    if (!collectionDates[collectionDate]) {
+                        collectionDates[collectionDate] = [barangay.id]
+                    } else {
+                        collectionDates[collectionDate].push(barangay.id)
+                    }
+                })
+            })
+            const scheduleDocs: scheduleType[] = Object.entries(collectionDates).map(([key, value]) => {
+                return {
+                    scheduleDate: Timestamp.fromDate(new Date(key)),
+                    scheduleArea: value
+                }
+            })
+            setScheduleData(scheduleDocs.sort((a, b) => {return a.scheduleDate.toDate().getTime() - b.scheduleDate.toDate().getTime()}))
+            clearDocs()
+            setIsLoading(false)
+        })
+
+        const unsubscribeRewards = onSnapshot(rewardsCollection, (rewards) => {
+            setIsLoading(true)
+            rewards.forEach((reward) => {
+                const docData = reward.data()
+                const rewardDetails: rewardType = {
+                    rewardId: reward.id,
+                    rewardIcon: docData.icon,
+                    rewardName: docData.name,
+                    rewardStatus: docData.status,
+                    rewardType: docData.rewardType,
+                    rewardDescription: docData.description,
+                    rewardCost: docData.cost
+                }
+                rewardsDocs.push(rewardDetails)
+            })
+            setRewardsData(rewardsDocs.sort((a: rewardType, b: rewardType) => a.rewardType.localeCompare(b.rewardType)))
             clearDocs()
             setIsLoading(false)
         })
@@ -212,6 +268,8 @@ export default function Layout({ children } : { children: React.ReactNode }) {
             unsubscribeUsers()
             unsubscribeTransactions()
             unsubscribeVouchers()
+            unsubscribeSchedule()
+            unsubscribeRewards()
         }
 
     }, [userId])
@@ -251,6 +309,12 @@ export default function Layout({ children } : { children: React.ReactNode }) {
             case '/dashboard/collections':
                 return 'Household Collections'
                 break
+            case '/dashboard/schedule':
+                return 'Collection Schedule'
+                break
+            case '/dashboard/rewards':
+                return 'Rewards'
+                break
             case '/dashboard/users':
                 return 'Users'
                 break
@@ -281,6 +345,8 @@ export default function Layout({ children } : { children: React.ReactNode }) {
             completedData,
             transactionsData,
             vouchersData,
+            scheduleData,
+            rewardsData,
             pendingCoordinates,
             ongoingCoordinates,
             mapLocation,
@@ -293,7 +359,7 @@ export default function Layout({ children } : { children: React.ReactNode }) {
             <SidebarProvider>
                 <AppSidebar variant="inset" requests={pendingData.length}/>
                 <SidebarInset>
-                    <main className="flex-1 flex-col flex m-2 mb-0 border-1 border-b-0 rounded-lg rounded-b-none max-h-screen overflow-hidden">
+                    <main className="flex-1 flex-col flex m-2 mb-0 border-1 border-b-0 rounded-lg rounded-b-none overflow-hidden">
                         <DashboardHeader title={title} />
                         {children}
                     </main>

@@ -4,7 +4,7 @@ import DataTable from '@/components/data-table'
 import { useContext, useState } from 'react'
 import { DashboardContext } from '../layout'
 import { vouchersColumns } from '@/components/table-columns'
-import TransactionsControls from '@/components/transactions-controls'
+import VoucherControls from '@/components/voucher-controls'
 
 export default function Vouchers() {
   // useContext for Dashboard Context
@@ -24,7 +24,7 @@ export default function Vouchers() {
 
   return (
     <div className="font-sans gap-3 flex justify-start-safe items-start-safe max-h-screen flex-1 flex-col p-3 pb-0">
-      <div className='w-full flex flex-row-reverse'><TransactionsControls buttonActive={buttonActive} rowSelection={selectedRows} setMapShown={setMapShown} mapShown={mapShown} setButtonActive={setButtonActive} /></div>
+      <div className='w-full flex flex-row-reverse'><VoucherControls buttonActive={buttonActive} rowSelection={selectedRows} setMapShown={setMapShown} mapShown={mapShown} setButtonActive={setButtonActive} /></div>
       <DataTable
         columns={vouchersColumns}
         data={!isLoading ? vouchersData : []}

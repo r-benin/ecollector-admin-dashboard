@@ -88,32 +88,12 @@ function randomDate(start: Date, end: Date) {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
 }
 
-const userData = {
-  firstName: 'Aegon',
-  lastName: 'Targaryen',
-  mobileNumber: '+639123450001',
-  email: 'aegontargaryen@gmail.com',  // Added email field
-  credits: 0,
-  createdOn: serverTimestamp(),
-  address: {
-    barangay: 'Karuhatan',
-    street: '485 Dragonstone St.',
-    city: 'Valenzuela City',
-    region: 'National Capital Region (NCR)',
-  },
-}
-
-
-
-
 export default function Users() {
   
   const [requestIdInput, setRequestIdInput] = useState('')
 
   const [transactionAmount, setTransactionAmount] = useState('')
   const [transactionUserId, setTransactionUserId] = useState('')
-
-  const [voucherQuantity, setVoucherQuantity] = useState('')
   
   const { usersData } = useContext(DashboardContext)
   
@@ -194,7 +174,7 @@ export default function Users() {
   }
   
   // Add voucher
-  async function addVoucher(quantity: number, id: string, status: 'Active' | 'Redeemed' | 'Expired') {
+  async function addVoucher(id: string, status: 'Active' | 'Redeemed' | 'Expired') {
     try {
       
       const userRef = doc(db, 'ecollector_users', `${id}`)
@@ -210,8 +190,7 @@ export default function Users() {
       if (userDoc.exists() && userData) {
         const addVoucher = await addDoc(collection(db, 'ecollector_vouchers'), {
           voucherTitle: randomReward,
-          voucherPrice: quantity * 5,
-          voucherQuantity: quantity,
+          voucherPrice: 5,
           voucherStatus: status,
           voucherExpiry: advanceDate,
           voucherCreatedOn: serverTimestamp(),
@@ -253,17 +232,13 @@ export default function Users() {
           <Button className='w-full bg-red-700 hover:bg-red-600' onClick={() => {addTransaction(parseInt(transactionAmount), 'Redeem', transactionUserId)}} disabled={(transactionAmount === '')} >Add Redeem Transaction</Button>
         </CardFooter>
       </Card>
-      <Card className='w-1/3 h-[13rem] p-5 gap-4'>
+      <Card className='w-1/3 h-[8.5rem] p-5 gap-4'>
         <CardHeader>
           <CardTitle>Vouchers</CardTitle>
           <CardDescription>Add transaction</CardDescription>
         </CardHeader>
-        <CardContent className='flex-col w-full h-full'>
-          <Label className='mb-1'>Reward Quantity</Label>
-          <Input value={voucherQuantity} onChange={text => setVoucherQuantity(text.target.value)}/>
-        </CardContent>
-        <CardFooter className='flex-col gap-3'>
-          <Button className='w-full' onClick={() => {addVoucher(parseInt(voucherQuantity), placeholderIds[Math.floor(Math.random() * 20)], 'Active')}}>Add voucher</Button>
+        <CardFooter>
+          <Button className='w-full' onClick={() => {addVoucher(placeholderIds[Math.floor(Math.random() * 20)], 'Active')}}>Add voucher</Button>
         </CardFooter>
       </Card>
     </div>
