@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 
 import { collection, onSnapshot, updateDoc, doc, Timestamp} from 'firebase/firestore'
 import { db } from '@/app/firebase/config'
-import { barangayType, collectionType, rewardType, scheduleType, voucherType } from '@/components/table-columns'
+import { barangayType, collectionPointType, collectionType, rewardType, scheduleType, voucherType } from '@/components/table-columns'
 import { accountType, transactionType } from "@/components/table-columns";
 
 type Coordinates = {latitude: number, longitude: number}
@@ -26,6 +26,7 @@ type DashboardContextType = {
     vouchersData: voucherType[] | []
     scheduleData: scheduleType[] | []
     rewardsData: rewardType[] | []
+    pointsData: collectionPointType[] | []
     pendingCoordinates: Coordinates[] | []
     ongoingCoordinates: Coordinates[] | []
     panMapLocation: (location: Coordinates) => void
@@ -45,6 +46,7 @@ export const DashboardContext = createContext<DashboardContextType>({
     vouchersData: [],
     scheduleData: [],
     rewardsData: [],
+    pointsData: [],
     pendingCoordinates: [],
     ongoingCoordinates: [],
     mapLocation: {latitude: 14.67905870159817, longitude: 120.98307441444432},
@@ -70,6 +72,7 @@ export default function Layout({ children } : { children: React.ReactNode }) {
     const [vouchersData, setVouchersData] = useState<voucherType[] | []>([])
     const [scheduleData, setScheduleData] = useState<scheduleType[] | []>([])
     const [rewardsData, setRewardsData] = useState<rewardType[] | []>([])
+    const [pointsData, setPointsData] = useState<collectionPointType[] | []>([])
 
     const [pendingCoordinates, setPendingCoordinates] = useState<Coordinates[]>([])
     const [ongoingCoordinates, setOngoingCoordinates] = useState<Coordinates[]>([])
@@ -86,6 +89,7 @@ export default function Layout({ children } : { children: React.ReactNode }) {
     let vouchersDocs: voucherType[] = []
     let scheduleDocs: scheduleType[] = []
     let rewardsDocs: rewardType[] = []
+    let pointsDocs: collectionPointType[] = []
     let pendingCoordinateArray: Coordinates[] = []
     let ongoingCoordinateArray: Coordinates[] = []
     const requestsCollection = collection(db, 'ecollector_requests')
@@ -94,6 +98,7 @@ export default function Layout({ children } : { children: React.ReactNode }) {
     const vouchersCollection = collection(db, 'ecollector_vouchers')
     const scheduleCollection = collection(db, 'ecollector_schedule')
     const rewardsCollection = collection(db, 'ecollector_rewards')
+    const pointsCollection = collection(db, 'ecollector_collection_points')
 
     function clearDocs() {
         requestDocs = []
@@ -104,6 +109,7 @@ export default function Layout({ children } : { children: React.ReactNode }) {
         vouchersDocs = []
         scheduleDocs = []
         rewardsDocs = []
+        pointsDocs = []
     }
 
     // Snapshot to fetch all requests
@@ -213,7 +219,7 @@ export default function Layout({ children } : { children: React.ReactNode }) {
                 }
                 vouchersDocs.push(voucherDetails)
             })
-            setVouchersData(vouchersDocs.sort((a, b) => {return b.voucherCreatedOn.toDate().getTime() - a.voucherCreatedOn.toDate().getTime()}))
+            setVouchersData(vouchersDocs.sort((a, b) => {return b.voucherCreatedOn?.toDate().getTime() - a.voucherCreatedOn?.toDate().getTime()}))
             clearDocs()
             setIsLoading(false)
         })
@@ -259,6 +265,24 @@ export default function Layout({ children } : { children: React.ReactNode }) {
                 rewardsDocs.push(rewardDetails)
             })
             setRewardsData(rewardsDocs.sort((a: rewardType, b: rewardType) => a.rewardType.localeCompare(b.rewardType)))
+            clearDocs()
+            setIsLoading(false)
+        })
+
+        const unsubscribePoints = onSnapshot(pointsCollection, (points) => {
+            setIsLoading(true)
+            points.forEach((point) => {
+                const docData = point.data()
+                const pointDetails: collectionPointType = {
+                    pointName: docData.name,
+                    pointCoordinates: docData.coordinates,
+                    pointAddress: docData.address,
+                    pointStatus: docData.status,
+                    pointId: point.id
+                }
+                pointsDocs.push(pointDetails)
+            })
+            setPointsData(pointsDocs)
             clearDocs()
             setIsLoading(false)
         })
@@ -315,6 +339,9 @@ export default function Layout({ children } : { children: React.ReactNode }) {
             case '/dashboard/rewards':
                 return 'Rewards'
                 break
+            case '/dashboard/points':
+                return 'Collection Points'
+                break
             case '/dashboard/users':
                 return 'Users'
                 break
@@ -347,6 +374,7 @@ export default function Layout({ children } : { children: React.ReactNode }) {
             vouchersData,
             scheduleData,
             rewardsData,
+            pointsData,
             pendingCoordinates,
             ongoingCoordinates,
             mapLocation,

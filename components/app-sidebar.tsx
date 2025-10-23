@@ -12,7 +12,7 @@ import {
     SidebarMenuItem
 } from "@/components/ui/sidebar"
 
-import { Droplet, History, LayoutDashboard, Ticket, Users, Wrench, Calendar, Gift } from "lucide-react"
+import { Droplet, History, LayoutDashboard, Ticket, Users, Wrench, Calendar, Gift, MapPin } from "lucide-react"
 
 import Image from "next/image"
 import { auth } from "@/app/firebase/config"
@@ -37,10 +37,15 @@ const sidebarItems = [
         url: '/dashboard/schedule',
         icon: Calendar,
     },
-        {
+    {
         title: 'Rewards',
         url: '/dashboard/rewards',
         icon: Gift
+    },
+    {
+        title: 'Collection Points',
+        url: '/dashboard/points',
+        icon: MapPin
     },
     {
         title: 'Transactions',

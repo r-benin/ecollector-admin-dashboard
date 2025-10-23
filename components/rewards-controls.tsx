@@ -231,7 +231,6 @@ export default function RewardsControls( { modifyDialog, setModifyDialog, delete
             addRewardForm.clearErrors()
             addRewardForm.reset()
         }
-        console.log(modifyDialog)
 
         if (modifyDialog.dialogOpen) {
             getDownloadURL(ref(storage, `/ecollector_assets/rewards/${modifyDialog.rewardIcon}`))
@@ -239,7 +238,6 @@ export default function RewardsControls( { modifyDialog, setModifyDialog, delete
                     setIconPreview(url)
                     modifyRewardForm.setValue('icon', url)
                 })
-            console.log(modifyDialog.rewardId)
             modifyRewardForm.reset({
                 name: modifyDialog.rewardName,
                 icon: modifyDialog.rewardIcon,
@@ -530,7 +528,7 @@ export default function RewardsControls( { modifyDialog, setModifyDialog, delete
                                                 }
                                                 <Input
                                                     className={'w-[250px] rounded-r-none truncate'}
-                                                    placeholder='No file uploaded' value={file ? file.name : modifyDialog.rewardIcon}
+                                                    placeholder='No file uploaded' value={file ? file.name : 'Upload new file to update icon'}
                                                     aria-invalid={fieldState.invalid}
                                                     disabled
                                                 />

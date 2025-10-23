@@ -111,7 +111,11 @@ export function DashboardAreaChart() {
         <div className="grid flex-1 gap-1">
           <CardTitle>Collections</CardTitle>
           <CardDescription>
-            Showing total visitors for the last 3 months
+            {
+              timeRange === '90d' ? 'Showing total collections for the last 3 months' :
+              timeRange === '30d' ? 'Showing total collections for the last 30 days' :
+              'Showing total collections for the last 7 days'
+            }
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>

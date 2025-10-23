@@ -76,7 +76,9 @@ export default function DataTable<TData, TValue> ({ columns, data, activateButto
         initialState :{
             columnVisibility: {
                 location: false,
-                rewardId: false
+                rewardId: false,
+                pointId: false,
+                pointCoordinates: false
             }
         }
     })

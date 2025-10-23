@@ -1,10 +1,11 @@
 import CollectionBadge from '@/components/collection-badge'
 import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef } from '@tanstack/react-table'
-import { Timestamp } from 'firebase/firestore'
+import { GeoPoint, Timestamp } from 'firebase/firestore'
 import { Badge } from './ui/badge';
 import { Bubbles, CircleEllipsis, Home, Utensils } from 'lucide-react';
 import RewardImage from './reward-image';
+import StatusBadge from './status-badge';
 
 export type barangayType =
   | "Arkong Bato"
@@ -119,27 +120,15 @@ export type rewardType = {
   rewardCost: number
 }
 
+export type collectionPointType = {
+  pointName: string,
+  pointCoordinates: GeoPoint,
+  pointAddress: string,
+  pointStatus: 'Active' | 'Inactive',
+  pointId: string
+}
+
 export const usersColumns: ColumnDef<accountType>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-  },
   {
     accessorKey: 'firstName',
     header: 'First Name'
@@ -578,15 +567,41 @@ export const rewardsColumns: ColumnDef<rewardType>[] = [
     cell: ({row}) => {
       return (
         <div className='flex justify-center'> {
-          row.getValue('rewardStatus') === 'Active' ?
-            <Badge variant='outline' className='bg-green-100 text-green-700 text-[10px]'>
-              <div className='w-1.5 h-1.5 rounded-full bg-green-700'></div>{row.getValue('rewardStatus')}
-            </Badge>
-          : <Badge variant='outline' className='bg-red-100 text-red-700 text-[10px]'>
-              <div className='w-1.5 h-1.5 rounded-full bg-red-700'></div>{row.getValue('rewardStatus')}
-            </Badge>
+          <StatusBadge status={row.getValue('rewardStatus')}/>
         } </div>
       )
     }
   },  
+]
+
+export const pointColumns: ColumnDef<collectionPointType>[] = [
+  {
+    accessorKey: 'pointName',
+    header: 'Collection Point',
+    cell: ({row}) => <p className='overflow-hidden text-ellipsis max-w-[250px]'>{row.getValue('pointName')}</p>
+  },
+  {
+    accessorKey: 'pointAddress',
+    header: 'Address',
+    cell: ({row}) => <p className='overflow-hidden text-ellipsis max-w-[600px]'>{row.getValue('pointAddress')}</p>
+  },
+  {
+    accessorKey: 'pointStatus',
+    header: () => <div className='flex justify-center'>Status</div>,
+    cell: ({row}) => {
+      return (
+        <div className='flex justify-center'> {
+          <StatusBadge status={row.getValue('pointStatus')}/>
+        } </div>
+      )
+    }
+  },
+  {
+    accessorKey: 'pointId',
+    header: 'Point ID'
+  },
+  {
+    accessorKey: 'pointCoordinates',
+    header: 'Point Coordinates'
+  },
 ]

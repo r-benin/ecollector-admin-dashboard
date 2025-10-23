@@ -55,7 +55,7 @@ export default function Schedule() {
   })
 
   return (
-    <div className="font-sans gap-3 flex justify-start-safe items-start-safe max-h-screen flex-1 flex-col p-3 pb-0">
+    <div className="font-sans gap-3 flex justify-start-safe items-start-safe flex-1 flex-col p-3 pb-5">
       <div className='w-full flex flex-row-reverse'>
         <ScheduleControls 
           disabledDates={
