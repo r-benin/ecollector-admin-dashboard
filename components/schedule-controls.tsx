@@ -20,7 +20,7 @@ import {
     MultiSelectTrigger,
     MultiSelectValue,
 } from "@/components/ui/multi-select"
-import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc, setDoc } from 'firebase/firestore'
+import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc, setDoc, runTransaction } from 'firebase/firestore'
 import { CalendarPlus } from 'lucide-react'
 import DatePicker from './date-picker'
 import { barangayType } from './table-columns'
@@ -81,62 +81,69 @@ export default function ScheduleControls( { disabledDates, modifyDialog, setModi
     const [selectedArea, setSelectedArea] = useState<string[] | undefined>(undefined)
     const [prevSchedule, setPrevSchedule] = useState<previousScheduleType>({prevDate: undefined, prevArea: undefined})
 
-    function addSchedule() {
+    async function addSchedule() {
         if (selectedArea != undefined && date != undefined) {
-            selectedArea.forEach(async (barangay) => {
-                const docRef = doc(db, 'ecollector_schedule', barangay)
-                try {
-                    const addCollectionDate = await updateDoc(docRef, {
-                        collection_dates: arrayUnion(Timestamp.fromDate(date))
-                    })
-                    console.log('Collection schedule added to', barangay)
-                } catch (e) {
-                    console.error("Error!", e);
-                }
-            })
+            try {
+                const docRefs = selectedArea.map((barangay) => doc(db, 'ecollector_schedule', barangay))
+                await runTransaction(db, async (transaction) => {
+                    for (const docRef of docRefs) {
+                        transaction.update(docRef, {
+                            collection_dates: arrayUnion(Timestamp.fromDate(date))
+                        })
+                    }
+                })
+            } catch (error) {
+                console.log('ERROR:', error)
+            }
         }
     }
 
-    function editSchedule() {
+    async function editSchedule() {
         if (selectedArea != undefined && date != undefined) {
-            prevSchedule.prevArea?.filter(barangay => !selectedArea.includes(barangay)).
-                forEach(async (barangay) => {
-                    const docRef = doc(db, 'ecollector_schedule', barangay)
-                    try {
-                        const editSchedule = await updateDoc(docRef, {
-                            collection_dates: arrayRemove(Timestamp.fromDate(date))
-                        })
-                    } catch (e) {
-                        console.error("Error!", e);
+            try {            
+                const removeDocRefs = prevSchedule.prevArea?.filter(barangay => !selectedArea.includes(barangay))
+                    .map((barangay) => doc(db, 'ecollector_schedule', barangay))
+                const addDocRefs = selectedArea.filter(barangay => !prevSchedule.prevArea?.includes(barangay))
+                    .map((barangay) => doc(db, 'ecollector_schedule', barangay))
+
+                await runTransaction(db, async (transaction) => {
+                    if (removeDocRefs) {
+                        for (const docRef of removeDocRefs) {
+                            transaction.update(docRef, {
+                                collection_dates: arrayRemove(Timestamp.fromDate(date))
+                            })
+                        }
                     }
-                })
-            selectedArea.filter(barangay => !prevSchedule.prevArea?.includes(barangay)).
-                forEach(async (barangay) => {
-                        const docRef = doc(db, 'ecollector_schedule', barangay)
-                        try {
-                            const editSchedule = await updateDoc(docRef, {
+
+                    if (addDocRefs) {
+                        for (const docRef of addDocRefs) {
+                            transaction.update(docRef, {
                                 collection_dates: arrayUnion(Timestamp.fromDate(date))
                             })
-                        } catch (e) {
-                            console.error("Error!", e);
                         }
+                    }
                 })
+            } catch (error) {
+                console.log('ERROR:', error)
+            }
         }
         
     }
 
-    function deleteSchedule() {
+    async function deleteSchedule() {
         if (deleteDialog.scheduleDate != undefined && deleteDialog.scheduleArea != undefined) {
-            deleteDialog.scheduleArea.forEach(async (barangay) => {
-                const docRef = doc(db, 'ecollector_schedule', barangay)
-                try {
-                    const removeCollectionDate = await updateDoc(docRef, {
-                        collection_dates: arrayRemove(deleteDialog.scheduleDate)
-                    })
-                } catch (e) {
-                    console.error("Error!", e);
-                }
-            })
+            const docRefs = deleteDialog.scheduleArea.map((barangay) => doc(db, 'ecollector_schedule', barangay))
+            try {
+                await runTransaction(db, async (transaction) => {
+                    for (const docRef of docRefs) {
+                        transaction.update(docRef, {
+                            collection_dates: arrayRemove(deleteDialog.scheduleDate)
+                        })
+                    }
+                })
+            } catch (error) {
+                console.log('ERROR:', error)
+            }
         }
     }
 
