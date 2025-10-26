@@ -36,7 +36,7 @@ export default function PinLocationMap({ pinLocation, setPinLocation, children, 
             <div className='w-full h-[300px] relative flex mb-12'>
                 <PlaceSearch setPinLocation={setPinLocation} setCentered={setCentered} setAddress={setAddress}/>
                 <Map
-                    className='w-full h-full absolute mt-13' 
+                    className='w-full h-full absolute mt-13 rounded overflow-hidden' 
                     defaultCenter={pinLocation ? {lat: pinLocation.latitude, lng: pinLocation.longitude} : {lat: 14.6790702516576, lng: 120.98309663310421}}
                     center={centered && pinLocation ? {lat: pinLocation.latitude, lng: pinLocation.longitude} : null}
                     defaultZoom={pinLocation ? 16 : 12}
