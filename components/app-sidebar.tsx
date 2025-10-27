@@ -62,11 +62,6 @@ const sidebarItems = [
         url: '/dashboard/users',
         icon: Users
     },
-    {
-        title: 'Dev Tools',
-        url: '/dashboard/dev_tools',
-        icon: Wrench
-    },
 ]
 
 export function AppSidebar({requests, ...props} : { requests: number } & React.ComponentProps<typeof Sidebar> ) {    

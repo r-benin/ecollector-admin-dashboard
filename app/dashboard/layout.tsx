@@ -351,9 +351,6 @@ export default function Layout({ children } : { children: React.ReactNode }) {
             case '/dashboard/vouchers':
                 return 'Vouchers'
                 break
-            case '/dashboard/dev_tools':
-                return 'Dev Tools'
-                break
             default:
                 return '?'
                 break
