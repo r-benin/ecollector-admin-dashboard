@@ -65,7 +65,7 @@ export default function RootLayout({
   return (
     <AuthContext.Provider value={{userId: userId, setUserId: setUserId}}>
       <html lang="en">
-        <Head><title>Ecollector Admin Dashboard</title></Head>
+        <title>Ecollector Admin Dashboard</title>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           {children}
         </body>
