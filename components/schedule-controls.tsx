@@ -190,7 +190,7 @@ export default function ScheduleControls( { disabledDates, modifyDialog, setModi
                                 </MultiSelectTrigger>
                                 <MultiSelectContent>
                                     <MultiSelectGroup>
-                                        { barangayList.map((barangay) => {
+                                        { barangayList.sort().map((barangay) => {
                                             return <MultiSelectItem key={barangay} value={barangay}>{barangay}</MultiSelectItem>
                                         })}
                                     </MultiSelectGroup>
