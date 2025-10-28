@@ -80,14 +80,14 @@ export default function CollectionPoints() {
                                 pointAddress: row.getValue('pointAddress'),
                                 pointId: row.getValue('pointId')
                             })
-                        }}><Pencil color='black'/>Modify reward</DropdownMenuItem>
+                        }}><Pencil color='black'/>Modify collection point</DropdownMenuItem>
                         <DropdownMenuItem variant='destructive' onClick={() => {
                             setDeleteDialog({
                                 dialogOpen: true,
                                 pointId: row.getValue('pointId'),
                                 pointName: row.getValue('pointName')
                             })
-                        }}><Trash />Delete reward</DropdownMenuItem>
+                        }}><Trash />Delete collection point</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     </div>
